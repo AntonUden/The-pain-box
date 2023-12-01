@@ -9,15 +9,11 @@
 #define RELAY 5
 
 #define HEARBEAT_COMMAND "HEARTBEAT"
-#define HEARBEAT_REPLY "HEARTBEAT_OK"
 #define HEARBEAT_DURATION 40
 
 #define SHOCK_DURATION_COMMAND "SHOCK_DURATION"
-#define SHOCK_DURATION_ERROR "SHOCK_DURATION_FAIL"
-#define SHOCK_DURATION_REPLY "SHOCK_DURATION_OK"
 
 #define SHOCK_COMMAND "SHOCK"
-#define SHOCK_COMMAND_REPLY "SHOCK_OK"
 
 int heartbeatCheck;
 int shockDuration;
@@ -48,7 +44,7 @@ void setup()
 
 	pinMode(RELAY, OUTPUT);
 
-	Serial.begin(9600);
+	Serial.begin(115200);
 }
 
 void loop()
@@ -60,25 +56,18 @@ void loop()
 		if (command == HEARBEAT_COMMAND)
 		{
 			heartbeatCheck = HEARBEAT_DURATION;
-			Serial.println(HEARBEAT_REPLY);
 		}
 		else if (command == SHOCK_DURATION_COMMAND)
 		{
 			float value = Serial.parseFloat();
 			int delay = value;
-			if (delay < 0 || delay > 10000)
-			{
-				Serial.println(SHOCK_DURATION_ERROR);
-			}
-			else
+			if (!(delay < 0 || delay > 10000))
 			{
 				shockDuration = delay;
-				Serial.println(String(SHOCK_DURATION_REPLY) + ":" + String(delay).c_str());
 			}
 		}
 		else if (command == SHOCK_COMMAND)
 		{
-			Serial.println(SHOCK_COMMAND_REPLY);
 			trigger();
 		}
 	}

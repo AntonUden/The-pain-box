@@ -97,7 +97,7 @@ export default class PainBox {
 						}
 					}
 
-					this._connection = new SerialConnection(this, device, 9600);
+					this._connection = new SerialConnection(this, device, 115200);
 					this.events.emit(BackendEvents.CONNECTION_CHANGE);
 					break;
 
@@ -117,6 +117,12 @@ export default class PainBox {
 		setInterval(() => {
 			this.tick();
 		}, 500);
+
+		setInterval(() => {
+			if (this._connection != null) {
+				this._connection.heartbeat();
+			}
+		}, 1500);
 	}
 
 	sendMessage(type: MessageType, message: string) {
@@ -156,10 +162,6 @@ export default class PainBox {
 	}
 
 	async tick() {
-		if (this._connection != null) {
-			this._connection.heartbeat();
-		}
-
 		this._amnesiaTheBunker.tick();
 	}
 
